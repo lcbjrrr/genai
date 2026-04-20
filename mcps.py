@@ -32,7 +32,14 @@ def temperature_f(city: str) -> int:
     return temp
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
+port = int(os.environ.get("PORT", 10000))
     
-    # host="0.0.0.0" allows external connections
-    mcp.run(transport="sse", host="0.0.0.0", port=port)
+    # FastMCP passes extra arguments to the underlying uvicorn server 
+    # via the sse_extra_kwargs dictionary.
+    mcp.run(
+        transport="sse",
+        sse_extra_kwargs={
+            "host": "0.0.0.0",
+            "port": port
+        }
+    )
