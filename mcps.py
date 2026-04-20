@@ -1,10 +1,11 @@
 import os
 from mcp.server.fastmcp import FastMCP
+from mcp.server.asgi import ASGIServer
 
 # 1. Initialize FastMCP
 mcp = FastMCP("simple-mcp")
 
-# --- Your Tools ---
+# --- Your Tools (Keep as they are) ---
 @mcp.tool()
 def state_capital_f(state: str) -> str:
     """Provides the most up-to-date capital for a given US state."""
@@ -15,15 +16,14 @@ def state_capital_f(state: str) -> str:
 def temperature_f(city: str) -> int:
     """Provides historical average temperature."""
     temps = {"Lansing": 50, "Tallahassee": 90, "Sacramento": 85}
-    return temps.get(city, "Data not available")
+    return temps.get(city, 0)
 
-# 2. Create the ASGI app (this is the magic line)
-# This automatically creates the /sse and /messages endpoints
-app = mcp.http_app()
+# 2. Wrap the MCP server in an ASGI app
+# This creates the necessary web interface for Render
+app = ASGIServer(mcp.server)
 
 if __name__ == "__main__":
     import uvicorn
-    # Render assigns a port via the PORT environment variable
     port = int(os.environ.get("PORT", 10000))
-    # Bind to 0.0.0.0 so Render's network can see the app
+    # We must use 0.0.0.0 for Render to see the port
     uvicorn.run(app, host="0.0.0.0", port=port)
