@@ -34,4 +34,11 @@ def temperature_f(city: str) -> int:
     return temp
 
 if __name__ == "__main__":
-    mcp.run(transport="sse")
+    port = int(os.environ.get("PORT", 10000))
+    
+    # 2. Reach inside FastMCP to get the actual Starlette/FastAPI app
+    # This is the 'secret handle' that allows us to use Uvicorn manually
+    starlette_app = mcp._app
+    
+    # 3. Force Uvicorn to listen on 0.0.0.0 so Render can see it
+    uvicorn.run(starlette_app, host="0.0.0.0", port=port)
