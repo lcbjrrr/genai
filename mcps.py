@@ -32,7 +32,7 @@ def temperature_f(city: str) -> int:
     return temp
 
 if __name__ == "__main__":
-port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 10000))
     
     # FastMCP passes extra arguments to the underlying uvicorn server 
     # via the sse_extra_kwargs dictionary.
