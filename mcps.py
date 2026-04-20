@@ -1,5 +1,6 @@
 from mcp.server.fastmcp import FastMCP
 import os
+import uvicorn 
 
 mcp = FastMCP("simple-mcp")
 
@@ -33,4 +34,5 @@ def temperature_f(city: str) -> int:
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    mcp.run(transport="sse",sse_extra_kwargs={"host": "0.0.0.0","port": port})
+    starlette_app = mcp.get_sse_app()
+    uvicorn.run(starlette_app, host="0.0.0.0", port=port) 
