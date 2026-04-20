@@ -1,7 +1,9 @@
 from mcp.server.fastmcp import FastMCP
 import os
 
-mcp = FastMCP("simple-mcp")
+PORT = int(os.environ.get("PORT", 8080))
+
+mcp = FastMCP("simple-mcp", host="0.0.0.0", port=PORT)
 
 @mcp.tool()
 def state_capital_f(state: str) -> str:
@@ -32,5 +34,4 @@ def temperature_f(city: str) -> int:
     return temp
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    mcp.run(transport="http", host="0.0.0.0", port=port)
+    mcp.run(transport="sse")
