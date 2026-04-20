@@ -1,6 +1,5 @@
 from mcp.server.fastmcp import FastMCP
 import os
-from starlette.responses import JSONResponse
 
 mcp = FastMCP("simple-mcp")
 
@@ -32,12 +31,6 @@ def temperature_f(city: str) -> int:
     print(f"=====> {city}: {temp}")
     return temp
 
-@mcp.custom_route("/health", methods=["GET"])
-async def health(request):
-    return JSONResponse({"status": "ok"})[web:19]
-
 if __name__ == "__main__":
-    app = mcp.http_app()  # ASGI app for /mcp endpoint
-    import uvicorn
     port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    mcp.run(transport="http", host="0.0.0.0", port=port)
