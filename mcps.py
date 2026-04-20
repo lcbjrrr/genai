@@ -3,6 +3,7 @@ import os
 import uvicorn 
 
 mcp = FastMCP("simple-mcp")
+app = mcp.get_event_loop_app()
 
 @mcp.tool()
 def state_capital_f(state: str) -> str:
