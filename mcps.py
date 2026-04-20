@@ -3,7 +3,7 @@ import os
 import uvicorn 
 
 mcp = FastMCP("simple-mcp")
-app = mcp.get_event_loop_app()
+#app = mcp.get_event_loop_app()
 
 @mcp.tool()
 def state_capital_f(state: str) -> str:
@@ -34,5 +34,4 @@ def temperature_f(city: str) -> int:
     return temp
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    mcp.run(transport="sse")
