@@ -1,29 +1,32 @@
 import os
 from mcp.server.fastmcp import FastMCP
-from mcp.server.asgi import ASGIServer
 
-# 1. Initialize FastMCP
+# Initialize FastMCP
 mcp = FastMCP("simple-mcp")
 
-# --- Your Tools (Keep as they are) ---
 @mcp.tool()
 def state_capital_f(state: str) -> str:
     """Provides the most up-to-date capital for a given US state."""
-    capitals = {"Michigan": "Lansing", "Florida": "Tallahassee", "California": "Sacramento"}
-    return capitals.get(state, "Unknown")
+    state_capital_dict = {
+        "Michigan": "Lansing", "Florida": "Tallahassee", "California": "Sacramento",
+        "Texas": "Austin", "New York": "Albany"
+    }
+    return state_capital_dict.get(state, "Unknown")
 
 @mcp.tool()
 def temperature_f(city: str) -> int:
-    """Provides historical average temperature."""
-    temps = {"Lansing": 50, "Tallahassee": 90, "Sacramento": 85}
-    return temps.get(city, 0)
-
-# 2. Wrap the MCP server in an ASGI app
-# This creates the necessary web interface for Render
-app = ASGIServer(mcp.server)
+    """Provides the historical average temperature for a given city."""
+    temp_dict = {"Lansing": 50, "Tallahassee": 90, "Sacramento": 85, "Austin": 80, "Albany": 45}
+    return temp_dict.get(city, "Data not available")
 
 if __name__ == "__main__":
-    import uvicorn
+    # Get the port Render assigned
     port = int(os.environ.get("PORT", 10000))
-    # We must use 0.0.0.0 for Render to see the port
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    
+    # OFFICIAL way to run FastMCP as a web server on Render
+    # This automatically sets up the /sse and /messages endpoints
+    mcp.run(
+        transport="http", 
+        host="0.0.0.0", 
+        port=port
+    )
